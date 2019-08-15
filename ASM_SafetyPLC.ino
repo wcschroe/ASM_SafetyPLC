@@ -1,8 +1,10 @@
+//Outputs
 #define contactorEnable A5
 #define EMO_OUT_0 4
 #define EMO_OUT_1 5
 #define Door_SW1_OUT 7
-
+	// external door switch exicitaion....#define Door_SW2_OUT, OUTPUT);
+//Inputs
 #define EMO_IN_0 A0
 #define EMO_IN_1 A1
 #define Door_SW1_IN A2
@@ -11,11 +13,15 @@
 bool safe = false;
 
 void pinSetup() {
+	//Outputs
 	pinMode(contactorEnable, OUTPUT);
 	pinMode(EMO_OUT_0, OUTPUT);
 	pinMode(EMO_OUT_1, OUTPUT);
 	pinMode(Door_SW1_OUT, OUTPUT);
+	// external door switch exicitaion....pinMode(Door_SW2_OUT, OUTPUT);
 
+	
+	//Inputs
 	pinMode(EMO_IN_0, INPUT);
 	pinMode(EMO_IN_1, INPUT);
 	pinMode(Door_SW1_IN, INPUT);
@@ -36,6 +42,10 @@ bool safeCheck() {
 	(digitalRead(EMO_IN_0) == HIGH)
 	&&
 	(digitalRead(EMO_IN_1) == HIGH);
+
+	//to be addded internal and external door switches
+	//to be added else for switch open error trapping
+	//good to scan and store all switch states for error output to user to know which switches are in fault   (amybe in bit set to one int?)
 
 	return safe;
 }
