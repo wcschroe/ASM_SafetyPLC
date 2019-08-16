@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
     "port": "/dev/ttyACM0",
-    "sketch": "ASM_Safety.ino"
+    "sketch": "ASM_SafetyPLC.ino"
 }
