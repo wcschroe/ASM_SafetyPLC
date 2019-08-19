@@ -4,7 +4,6 @@
 #define EMO_OUT_1 5
 #define Door_SW1_OUT 6
 #define Door_SW2_OUT 7
-	// external door switch exicitaion....#define Door_SW2_OUT, OUTPUT);
 //Inputs
 #define EMO_IN_0 A0
 #define EMO_IN_1 A1
@@ -18,7 +17,8 @@ uint16_t INPUTPINS[] = {
 	EMO_IN_0, 
 	EMO_IN_1, 
 	Door_SW1_IN, 
-	Door_SW2_IN
+	Door_SW2_IN,
+	Main_Controller_ON
 };
 
 uint16_t OUTPUTPINS[] = { 
@@ -31,9 +31,14 @@ uint16_t OUTPUTPINS[] = {
 int numInputs = sizeof(INPUTPINS) / sizeof(INPUTPINS[0]);
 int numOutputs = sizeof(OUTPUTPINS) / sizeof(OUTPUTPINS[0]);
 
-void SHUTDOWN() {
+void SHUTDOWN(int errorPin) {
+	digitalWrite(contactorEnable, LOW);
+	digitalWriteOutputs(LOW);
 	while (true) {
-		digitalWrite(contactorEnable, LOW);
+		digitalWrite(OUTPUTPINS[errorPin], HIGH);
+		delay(1000);
+		digitalWrite(OUTPUTPINS[errorPin], LOW);
+		delay(1000);
 	}
 }
 
@@ -52,29 +57,19 @@ void pinSetup() {
 }
 
 bool safeCheck() {
-	safe = 
-	(digitalRead(EMO_IN_0) == HIGH) // EMO Up
-	&&
-	(digitalRead(EMO_IN_1) == HIGH) // EMO Up
-	&&
-	(digitalRead(Door_SW1_IN) == HIGH) // Panel Door Closed
-	&&
-	(digitalRead(Door_SW2_IN) == HIGH) // Test Site Door Closed
-	&&
-	(digitalRead(Main_Controller_ON) == HIGH); // Main Controller has no conditional errors
-
-	//to be added else for switch open error trapping
-	//good to scan and store all switch states for error output to user to know which switches are in fault   (amybe in bit set to one int?)
-
-	if (safe) return true;
-	else SHUTDOWN();
+	safe = true;
+	for(int i = 0; i < numInputs; i++) {
+		safe &= (digitalRead(INPUTPINS[i]) == HIGH);
+		if (!safe) SHUTDOWN(i);
+	}
+	return true;
 }
 
 bool wiringCheck() {
 	for(int i = 0; i < numOutputs; i++) {
 		digitalWrite(OUTPUTPINS[i], LOW);
 		delay(100);
-		if (digitalRead(INPUTPINS[i]) != LOW) SHUTDOWN();
+		if (digitalRead(INPUTPINS[i]) != LOW) SHUTDOWN(i);
 		digitalWrite(OUTPUTPINS[i], HIGH);
 	}
 }
