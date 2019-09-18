@@ -1,15 +1,16 @@
 //Outputs
 #define contactorEnable A5
-#define EMO_OUT_0 4
-#define EMO_OUT_1 5
-#define Door_SW1_OUT 6
-#define Door_SW2_OUT 7
+#define EMO_OUT_0 4				//D0
+#define EMO_OUT_1 5				//D1
+#define Door_SW1_OUT 6			//D2
+#define Door_SW2_OUT 7			//D3
+#define Door_Latch 8			//D4
 //Inputs
-#define EMO_IN_0 A0
-#define EMO_IN_1 A1
-#define Door_SW1_IN A2
-#define Door_SW2_IN A3
-#define Main_Controller_ON 2
+#define EMO_IN_0 A0				//A0
+#define EMO_IN_1 A1				//A1
+#define Door_SW1_IN A2			//A2
+#define Door_SW2_IN A3			//A3
+#define Main_Controller_ON 2	//In0
 
 bool safe = false;
 
@@ -25,7 +26,8 @@ uint16_t OUTPUTPINS[] = {
 	EMO_OUT_0, 
 	EMO_OUT_1, 
 	Door_SW1_OUT, 
-	Door_SW2_OUT 
+	Door_SW2_OUT,
+	Door_Latch
 };
 
 int numInputs = sizeof(INPUTPINS) / sizeof(INPUTPINS[0]);
@@ -66,7 +68,7 @@ bool safeCheck() {
 }
 
 bool wiringCheck() {
-	for(int i = 0; i < numOutputs; i++) {
+	for(int i = 0; i < numOutputs - 1; i++) {
 		digitalWrite(OUTPUTPINS[i], LOW);
 		delay(100);
 		if (digitalRead(INPUTPINS[i]) != LOW) SHUTDOWN(i);
