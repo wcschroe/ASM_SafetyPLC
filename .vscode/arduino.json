@@ -1,5 +1,6 @@
 {
     "board": "arduino:avr:uno",
-    "port": "/dev/ttyACM0",
-    "sketch": "ASM_SafetyPLC.ino"
+    "port": "COM5",
+    "sketch": "ASM_SafetyPLC.ino",
+    "output": "Binaries"
 }
